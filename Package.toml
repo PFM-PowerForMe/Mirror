@@ -1,0 +1,34 @@
+# AUR
+# https://wiki.archlinux.org/title/Aurweb_RPC_interface
+# https://aur.archlinux.org/rpc/swagger
+
+[pkg.sing-box]
+api_interface = "Github"
+Github.repo = "SagerNet/sing-box"
+PKGBUILD.pkgrel = 1
+
+[pkg.cloudflare-wrangler2]
+api_interface = "AUR"
+AUR.id = 1222149
+
+[pkg.xray]
+api_interface = "AUR"
+depends_in_mirror = true
+depends = ["xray-domain-list-community", "xray-geoip"]
+AUR.id = 1243029
+
+[pkg.hysteria]
+api_interface = "AUR"
+AUR.id = 1272619
+
+[pkg.naiveproxy]
+api_interface = "AUR"
+AUR.id = 1269316
+
+[pkg.xray-domain-list-community]
+api_interface = "AUR"
+AUR.id = 1273122
+
+[pkg.xray-geoip]
+api_interface = "AUR"
+AUR.id = 1273500

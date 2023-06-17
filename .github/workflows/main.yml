@@ -1,0 +1,38 @@
+name: CI
+on:
+  schedule:
+    - cron: '33 9 * * *'
+  push:
+    branches: [main]
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pfm-powerforme/archlinuxpfm-contained:main
+      env:
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_R2_TOKEN_KEY_ID: ${{ secrets.CLOUDFLARE_R2_TOKEN_KEY_ID }}
+        CLOUDFLARE_R2_TOKEN_SECRET: ${{ secrets.CLOUDFLARE_R2_TOKEN_SECRET }}
+        R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        GPG_KEYID: ${{ secrets.GPG_KEYID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: run scripts
+        shell: bash
+        run: |
+          mkdir /build/Mirror
+          cp -r ./* /build/Mirror
+          sudo chown -R builduser:builduser /build
+          cd /build/Mirror
+          sudo -u builduser bash -c '
+          export CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          export CLOUDFLARE_R2_TOKEN_KEY_ID=${{ secrets.CLOUDFLARE_R2_TOKEN_KEY_ID }}
+          export CLOUDFLARE_R2_TOKEN_SECRET=${{ secrets.CLOUDFLARE_R2_TOKEN_SECRET }}
+          export R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+          export GPG_KEYID=${{ secrets.GPG_KEYID }}
+          printf %s "${{ secrets.GPG_KEY }}" > /build/gpgkey.asc
+          gpg --import /build/gpgkey.asc
+          rm /build/gpgkey.asc
+          ./run.sh
+          '

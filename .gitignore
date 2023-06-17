@@ -1,0 +1,8 @@
+# 
+
+.venv
+venv
+work
+__pycache__
+
+test.sh
